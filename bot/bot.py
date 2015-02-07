@@ -34,9 +34,9 @@ def save_tags():
 
 def insta_write(to_write):
     global filename, log_file
-    if filename != config["path"]+"insta"+time.strftime("%d%m%Y")+".html":
+    if filename != config["path"]+config["prefix_name"]+time.strftime("%d%m%Y")+".html":
         log_file.close()
-        filename = config["path"]+"insta"+time.strftime("%d%m%Y")+".html"
+        filename = config["path"]+config["prefix_name"]+time.strftime("%d%m%Y")+".html"
         log_file = open(filename, "wb")
 
     if isinstance(to_write, list):
