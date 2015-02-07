@@ -126,11 +126,7 @@ while True:
 
                 if len(media_tag) == 0 or tags["tags"][tag] is None:
                     tags["tags"][tag] = 0
-                    if reduce(lambda r, h: r and h == 0, tags["tags"].items(), True):
-                        insta_write("END")
-                        exit(1)
-                    else:
-                        likes_for_this_tag = 0
+                    likes_for_this_tag = 0
                 else:
                     insta_write(tags["tags"][tag])
                     tags["tags"][tag] = tags["tags"][tag].split("&")[-1:][0].split("=")[1]
@@ -138,3 +134,7 @@ while True:
                 for m in media_tag:
                     #verify if date is higher
                     like_and_follow(m)
+
+        if reduce(lambda r, h: r and h[1] == 0, tags["tags"].items(), True):
+            insta_write("END")
+            exit(1)
