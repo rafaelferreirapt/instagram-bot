@@ -52,3 +52,28 @@ docs/_build/
 
 # PyBuilder
 target/
+
+.idea/
+.idea/vcs.xml
+
+.idea/.name
+
+.idea/instagram-bot.iml
+
+.idea/encodings.xml
+
+.idea/instagram-bot.iml
+
+.idea/scopes/scope_settings.xml
+
+.idea/modules.xml
+
+.idea/instagram-bot.iml
+
+.idea/misc.xml
+
+.idea/instagram-bot.iml
+
+.idea/instagram-bot.iml
+
+*.iml

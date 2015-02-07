@@ -1,0 +1,10 @@
+{
+  "path": "",
+  "access_token": "1682886590.1c9d0c5.2e192e8d882747d383e641dc57f90fee",
+  "my_user_id": "1682886590",
+
+  "prefix_name" : "insta",
+  "follows_per_hour": 60,
+  "likes_per_hour": 100,
+  "sleep_timer": 4
+}

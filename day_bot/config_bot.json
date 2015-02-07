@@ -1,0 +1,10 @@
+{
+  "path": "",
+  "access_token": "1682886590.1188bb8.0189b55f4023450bb1165aa644f1eec5",
+  "my_user_id": "1682886590",
+
+  "prefix_name" : "daybot",
+  "follows_per_hour": 60,
+  "likes_per_hour": 100,
+  "sleep_timer": 4
+}
