@@ -14,11 +14,11 @@ class CleanFollows:
         self.api = InstagramAPI(access_token=self.config["access_token"])
 
     def run(self):
-        try:
-            self.follows()
-        except Exception, e:
-            time.sleep(1800)
-            self.follows()
+        while True:
+            try:
+                self.follows()
+            except Exception, e:
+                time.sleep(1800)
 
     def follows(self, next_page=None):
         if next_page is None:
@@ -26,15 +26,19 @@ class CleanFollows:
         else:
             follows = self.api.user_follows(user_id=self.config['my_user_id'], max_tag_id=next_page)
 
+        time.sleep(1)
         for follow in follows[0]:
             var = self.api.user_relationship(user_id=follow.id)
             print var.incoming_status
 
             if var.incoming_status == 'none':
+                time.sleep(1)
                 self.api.unfollow_user(user_id=follow.id)
 
             var = self.api.user_relationship(user_id=follow.id)
             print var.outgoing_status
+
+            time.sleep(1)
 
         return self.follows(follows[1].split("&")[-1:][0].split("=")[1])
 
