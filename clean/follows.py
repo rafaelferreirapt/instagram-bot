@@ -15,32 +15,31 @@ class CleanFollows:
 
     def run(self):
         while True:
-            try:
-                self.follows()
-            except Exception, e:
-                time.sleep(1800)
+               self.follows()
 
     def follows(self, next_page=None):
-        if next_page is None:
-            follows = self.api.user_follows(user_id=self.config['my_user_id'])
-        else:
-            follows = self.api.user_follows(user_id=self.config['my_user_id'], max_tag_id=next_page)
+        print "next_page", next_page
 
-        time.sleep(1)
-        for follow in follows[0]:
+        if next_page is None:
+            follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'])
+        else:
+            try:
+                follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'], with_next_url=next_page)
+            except Exception, e:
+                time.sleep(1800)
+                return self.follows(next_page)
+
+        for follow in follows:
             var = self.api.user_relationship(user_id=follow.id)
             print var.incoming_status, follow.id
 
             if var.incoming_status == 'none':
-                time.sleep(1)
                 self.api.unfollow_user(user_id=follow.id)
 
             var = self.api.user_relationship(user_id=follow.id)
             print var.outgoing_status, follow.id
 
-            time.sleep(1)
-
-        return self.follows(follows[1].split("&")[-1:][0].split("=")[1])
+        return self.follows(next_)
 
 
 if __name__ == '__main__':
