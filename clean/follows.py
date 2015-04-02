@@ -29,14 +29,14 @@ class CleanFollows:
         time.sleep(1)
         for follow in follows[0]:
             var = self.api.user_relationship(user_id=follow.id)
-            print var.incoming_status
+            print var.incoming_status, follow.id
 
             if var.incoming_status == 'none':
                 time.sleep(1)
                 self.api.unfollow_user(user_id=follow.id)
 
             var = self.api.user_relationship(user_id=follow.id)
-            print var.outgoing_status
+            print var.outgoing_status, follow.id
 
             time.sleep(1)
 
