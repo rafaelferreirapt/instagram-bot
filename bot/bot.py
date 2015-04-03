@@ -6,118 +6,121 @@ from random import randint
 import json
 
 
-#Loading the configuration file, it has the access_token, user_id and others configs
-config_file = open("config_bot.json", "r")
-config = json.load(config_file)
+class Bot:
+    def __init__(self, config_file, tags_file):
+        # Loading the configuration file, it has the access_token, user_id and others configs
+        self.config = json.load(config_file)
 
-#Loading the tags file, it will be keep up to date while the script is running
-tags_file = open("tags.json", "r")
-tags = json.load(tags_file)
+        # Loading the tags file, it will be keep up to date while the script is running
+        self.tags = json.load(tags_file)
 
-#Log file to output to html the debugging info about the script
-filename = config["path"]+config["prefix_name"]+time.strftime("%d%m%Y")+".html"
-log_file = open(filename, "wb")
+        # Log file to output to html the debugging info about the script
+        self.filename = self.config["path"]+self.config["prefix_name"]+time.strftime("%d%m%Y")+".html"
+        self.log_file = open(self.filename, "wb")
 
-#Initializing the Instagram API with our access token
-api = InstagramAPI(access_token=config["access_token"])
+        # Initializing the Instagram API with our access token
+        self.api = InstagramAPI(access_token=self.config["access_token"])
 
-#Likes per tag rate
-likes_per_tag = math.trunc(min(config["follows_per_hour"], config["likes_per_hour"])/len(tags["tags"]))
+        # Likes per tag rate
+        self.likes_per_tag = math.trunc(min(self.config["follows_per_hour"],
+                                            self.config["likes_per_hour"]) / len(self.tags["tags"]))
 
+    def save_tags(self):
+        j = json.dumps(self.tags, indent=4)
+        f = open('tags.json', 'w')
+        print >> f, j
+        f.close()
 
-def save_tags():
-    global tags
-    j = json.dumps(tags, indent=4)
-    f = open('tags.json', 'w')
-    print >> f, j
-    f.close()
+    def insta_write(self, to_write):
+        if self.filename != self.config["path"] + self.config["prefix_name"] + time.strftime("%d%m%Y") + ".html":
+            self.log_file.close()
+            self.filename = self.config["path"] + self.config["prefix_name"] + time.strftime("%d%m%Y") + ".html"
+            self.log_file = open(self.filename, "wb")
 
-def insta_write(to_write):
-    global filename, log_file
-    if filename != config["path"]+config["prefix_name"]+time.strftime("%d%m%Y")+".html":
-        log_file.close()
-        filename = config["path"]+config["prefix_name"]+time.strftime("%d%m%Y")+".html"
-        log_file = open(filename, "wb")
+        if isinstance(to_write, list):
+            self.log_file.write(''.join(to_write)+"<br/>")
+        else:
+            self.log_file.write(str(to_write)+"<br/>")
+            self.log_file.flush()
 
-    if isinstance(to_write, list):
-        log_file.write(''.join(to_write)+"<br/>")
-    else:
-        log_file.write(str(to_write)+"<br/>")
-    log_file.flush()
+    def going_sleep(self, timer):
+        sleep = randint(timer, 2*timer)
+        self.insta_write("SLEEP "+str(sleep))
+        time.sleep(sleep)
 
+    def like_and_follow(self, media, likes_for_this_tag):
+        try:
+            var = self.api.user_relationship(user_id=media.user.id)
 
-def going_sleep(timer):
-    #sleep for x seconds
-    sleep = randint(timer, 2*timer)
-    insta_write("SLEEP "+str(sleep))
-    time.sleep(sleep)
+            if self.config["my_user_id"] != media.user.id:
+                self.insta_write("--------------")
+                self.insta_write(var)
 
+                if var.outgoing_status == 'none':
+                    self.insta_write("LIKE RESULT:")
+                    self.insta_write(self.api.like_media(media_id=media.id))
 
-def like_and_follow(media):
-    global api, likes_for_this_tag
-    try:
-        var = api.user_relationship(user_id=media.user.id)
+                    self.insta_write("FOLLOW RESULT:")
+                    self.insta_write(self.api.follow_user(user_id=media.user.id))
 
-        if config["my_user_id"] != media.user.id:
-            insta_write("--------------")
-            insta_write(var)
+                    likes_for_this_tag -= 1
 
-            if var.outgoing_status == 'none':
-                insta_write("LIKE RESULT:")
-                insta_write(api.like_media(media_id=media.id))
-
-                insta_write("FOLLOW RESULT:")
-                insta_write(api.follow_user(user_id=media.user.id))
-
-                likes_for_this_tag -= 1
-
-                going_sleep(config["sleep_timer"])
-            else:
-                going_sleep(config["sleep_timer"]/2)
-
-    except Exception, e:
-        insta_write(str(e))
-        insta_write("GOING SLEEP 30 min")
-        time.sleep(1800)
-        like_and_follow(media)
-
-while True:
-    for tag in tags["tags"].keys():
-        tag = str(tag)
-        insta_write("--------------------")
-        insta_write("TAG: "+tag)
-        insta_write("--------------------")
-
-        insta_write("--------------------")
-        insta_write("DICTIONARY STATUS:")
-        for keys, values in tags["tags"].items():
-            insta_write(keys)
-            if values is not None:
-                insta_write(values)
-
-        likes_for_this_tag = likes_per_tag
-
-        while likes_for_this_tag > 0 and tags["tags"][tag] != 0:
-                if tags["tags"][tag] is None:
-                    media_tag, tags["tags"][tag] = api.tag_recent_media(tag_name=tag, count=likes_for_this_tag)
+                    self.going_sleep(self.config["sleep_timer"])
                 else:
-                    media_tag, tags["tags"][tag] = api.tag_recent_media(tag_name=tag, count=likes_for_this_tag,
-                                                                max_tag_id=tags["tags"][tag])
+                    self.going_sleep(self.config["sleep_timer"]/2)
 
-                insta_write("API CALL DONE")
+        except Exception, e:
+            self.insta_write(str(e))
+            self.insta_write("GOING SLEEP 30 min")
+            time.sleep(1800)
+            self.like_and_follow(media, likes_for_this_tag)
 
-                if len(media_tag) == 0 or tags["tags"][tag] is None:
-                    tags["tags"][tag] = 0
-                    likes_for_this_tag = 0
-                else:
-                    insta_write(tags["tags"][tag])
-                    tags["tags"][tag] = tags["tags"][tag].split("&")[-1:][0].split("=")[1]
+        return likes_for_this_tag
 
-                save_tags()
+    def run(self):
+        while True:
+            for tag in self.tags["tags"].keys():
+                tag = str(tag)
+                self.insta_write("--------------------")
+                self.insta_write("TAG: " + tag)
+                self.insta_write("--------------------")
 
-                for m in media_tag:
-                    like_and_follow(m)
+                self.insta_write("--------------------")
+                self.insta_write("DICTIONARY STATUS:")
 
-        if reduce(lambda r, h: r and h[1] == 0, tags["tags"].items(), True):
-            insta_write("END")
-            exit(1)
+                for keys, values in self.tags["tags"].items():
+                    self.insta_write(keys)
+                    if values is not None:
+                        self.insta_write(values)
+
+                likes_for_this_tag = self.likes_per_tag
+
+                while likes_for_this_tag > 0 and self.tags["tags"][tag] != 0:
+                        if self.tags["tags"][tag] is None:
+                            media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag, count=likes_for_this_tag)
+                        else:
+                            media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag, count=likes_for_this_tag,
+                                                                                          max_tag_id=self.tags["tags"][tag])
+
+                        self.insta_write("API CALL DONE")
+
+                        if len(media_tag) == 0 or self.tags["tags"][tag] is None:
+                            self.tags["tags"][tag] = 0
+                            likes_for_this_tag = 0
+                        else:
+                            self.insta_write(self.tags["tags"][tag])
+                            self.tags["tags"][tag] = self.tags["tags"][tag].split("&")[-1:][0].split("=")[1]
+
+                        self.save_tags()
+
+                        for m in media_tag:
+                            likes_for_this_tag = self.like_and_follow(m, likes_for_this_tag)
+
+                if reduce(lambda r, h: r and h[1] == 0, self.tags["tags"].items(), True):
+                    self.insta_write("END")
+                    exit(1)
+
+
+if __name__ == '__main__':
+    bot = Bot(open("config_bot.json", "r"), open("tags.json", "r"))
+    bot.run()
