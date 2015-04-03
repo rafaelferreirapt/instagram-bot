@@ -18,28 +18,29 @@ class CleanFollows:
                self.follows()
 
     def follows(self, next_page=None):
-        print "next_page", next_page
+        print "next_page: ", next_page
 
-        if next_page is None:
-            follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'])
-        else:
-            try:
-                follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'], with_next_url=next_page)
-            except Exception, e:
-                time.sleep(1800)
-                return self.follows(next_page)
+        try:
+            if next_page is None:
+                follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'])
+            else:
+                    follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'], with_next_url=next_page)
 
-        for follow in follows:
-            var = self.api.user_relationship(user_id=follow.id)
-            print var.incoming_status, follow.id
+            for follow in follows:
+                var = self.api.user_relationship(user_id=follow.id)
+                print var.incoming_status, follow.id
 
-            if var.incoming_status == 'none':
-                self.api.unfollow_user(user_id=follow.id)
+                if var.incoming_status == 'none':
+                    self.api.unfollow_user(user_id=follow.id)
 
-            var = self.api.user_relationship(user_id=follow.id)
-            print var.outgoing_status, follow.id
+                var = self.api.user_relationship(user_id=follow.id)
+                print var.outgoing_status, follow.id
 
-        return self.follows(next_)
+            return self.follows(next_)
+        except Exception, e:
+            print e
+            time.sleep(1800)
+            return self.follows(next_page)
 
 
 if __name__ == '__main__':
