@@ -1,9 +1,10 @@
 __author__ = 'gipmon'
-from instagram.client import InstagramAPI
 import math
 import time
 from random import randint
 import json
+
+from instagram.client import InstagramAPI
 
 
 class Bot:
@@ -15,7 +16,7 @@ class Bot:
         self.tags = json.load(tags_file)
 
         # Log file to output to html the debugging info about the script
-        self.filename = self.config["path"]+self.config["prefix_name"]+time.strftime("%d%m%Y")+".html"
+        self.filename = self.config["path"] + self.config["prefix_name"] + time.strftime("%d%m%Y") + ".html"
         self.log_file = open(self.filename, "wb")
 
         # Initializing the Instagram API with our access token
@@ -38,14 +39,14 @@ class Bot:
             self.log_file = open(self.filename, "wb")
 
         if isinstance(to_write, list):
-            self.log_file.write(''.join(to_write)+"<br/>")
+            self.log_file.write(''.join(to_write) + "<br/>")
         else:
-            self.log_file.write(str(to_write)+"<br/>")
+            self.log_file.write(str(to_write) + "<br/>")
             self.log_file.flush()
 
     def going_sleep(self, timer):
-        sleep = randint(timer, 2*timer)
-        self.insta_write("SLEEP "+str(sleep))
+        sleep = randint(timer, 2 * timer)
+        self.insta_write("SLEEP " + str(sleep))
         time.sleep(sleep)
 
     def like_and_follow(self, media, likes_for_this_tag):
@@ -67,7 +68,7 @@ class Bot:
 
                     self.going_sleep(self.config["sleep_timer"])
                 else:
-                    self.going_sleep(self.config["sleep_timer"]/2)
+                    self.going_sleep(self.config["sleep_timer"] / 2)
 
         except Exception, e:
             self.insta_write(str(e))
@@ -81,6 +82,7 @@ class Bot:
         while True:
             for tag in self.tags["tags"].keys():
                 tag = str(tag)
+
                 self.insta_write("--------------------")
                 self.insta_write("TAG: " + tag)
                 self.insta_write("--------------------")
@@ -96,25 +98,27 @@ class Bot:
                 likes_for_this_tag = self.likes_per_tag
 
                 while likes_for_this_tag > 0 and self.tags["tags"][tag] != 0:
-                        if self.tags["tags"][tag] is None:
-                            media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag, count=likes_for_this_tag)
-                        else:
-                            media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag, count=likes_for_this_tag,
-                                                                                          max_tag_id=self.tags["tags"][tag])
+                    if self.tags["tags"][tag] is None:
+                        media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag,
+                                                                                      count=likes_for_this_tag)
+                    else:
+                        media_tag, self.tags["tags"][tag] = self.api.tag_recent_media(tag_name=tag,
+                                                                                      count=likes_for_this_tag,
+                                                                                      max_tag_id=self.tags["tags"][tag])
 
-                        self.insta_write("API CALL DONE")
+                    self.insta_write("API CALL DONE")
 
-                        if len(media_tag) == 0 or self.tags["tags"][tag] is None:
-                            self.tags["tags"][tag] = 0
-                            likes_for_this_tag = 0
-                        else:
-                            self.insta_write(self.tags["tags"][tag])
-                            self.tags["tags"][tag] = self.tags["tags"][tag].split("&")[-1:][0].split("=")[1]
+                    if len(media_tag) == 0 or self.tags["tags"][tag] is None:
+                        self.tags["tags"][tag] = 0
+                        likes_for_this_tag = 0
+                    else:
+                        self.insta_write(self.tags["tags"][tag])
+                        self.tags["tags"][tag] = self.tags["tags"][tag].split("&")[-1:][0].split("=")[1]
 
-                        self.save_tags()
+                    self.save_tags()
 
-                        for m in media_tag:
-                            likes_for_this_tag = self.like_and_follow(m, likes_for_this_tag)
+                    for m in media_tag:
+                        likes_for_this_tag = self.like_and_follow(m, likes_for_this_tag)
 
                 if reduce(lambda r, h: r and h[1] == 0, self.tags["tags"].items(), True):
                     self.insta_write("END")

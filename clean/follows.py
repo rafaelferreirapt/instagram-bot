@@ -15,7 +15,7 @@ class CleanFollows:
 
     def run(self):
         while True:
-               self.follows()
+            self.follows()
 
     def follows(self, next_page=None):
         print "next_page: ", next_page
@@ -24,7 +24,7 @@ class CleanFollows:
             if next_page is None:
                 follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'])
             else:
-                    follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'], with_next_url=next_page)
+                follows, next_ = self.api.user_follows(user_id=self.config['my_user_id'], with_next_url=next_page)
 
             for follow in follows:
                 var = self.api.user_relationship(user_id=follow.id)

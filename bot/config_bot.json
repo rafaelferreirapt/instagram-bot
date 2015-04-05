@@ -1,7 +1,7 @@
 {
   "path": "",
-  "access_token": "1682886590.1c9d0c5.2e192e8d882747d383e641dc57f90fee",
-  "my_user_id": "1682886590",
+  "access_token": "YOUR_ACCESS_TOKEN",
+  "my_user_id": "YOUR_USER_ID",
 
   "prefix_name" : "insta",
   "follows_per_hour": 60,

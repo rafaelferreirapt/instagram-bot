@@ -1,10 +1,11 @@
 __author__ = 'gipmon'
-from instagram.client import InstagramAPI
 import math
 import time
 import datetime
 from random import randint
 import json
+
+from instagram.client import InstagramAPI
 
 
 class DayBot:
@@ -137,6 +138,7 @@ class DayBot:
                 if reduce(lambda r, h: r and h[1] == 0, self.tags["tags"].items(), True):
                     self.log_write("END")
                     exit(1)
+
 
 if __name__ == '__main__':
     bot = DayBot(open("config_bot.json", "r"), open("tags.json", "r"))
