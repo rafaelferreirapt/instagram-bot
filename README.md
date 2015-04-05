@@ -40,10 +40,13 @@ You have, for now, 3 different bots:
  1. Clone this repository to one folder
  2. Configure the bot's
  3. Launch the **screen**:
+ 
 	```// Bash:
 	screen -S SCREEN_NAME -d -m -L python ~/PATH_TO_BOT/bot.py
 	```
+	
  4. Crontab for **day_bot.py**:
+ 
 	```// Bash:
 	$ crontab -e
 	00 5 * * * cd ~/PATH_TO_DAY_BOT/ && python day_bot.py
