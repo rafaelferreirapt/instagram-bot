@@ -37,7 +37,7 @@ You have, for now, 3 different bots:
 ## Installation ##
 *Use a Raspberry PI!*
 
- 1. Clone this repository to one folder
+ 1. Clone this repository to a folder
  2. Configure the bot's
  3. Launch the **screen**:
  
@@ -61,4 +61,4 @@ You have, for now, 3 different bots:
 ----------
 
 
-**More information: [http://www.rafaelferreira.pt](http://www.rafaelferreira.pt)**
+**More information: [http://www.rafaelferreira.pt/instagram-python-bot/](http://www.rafaelferreira.pt/instagram-python-bot/)**
