@@ -2,6 +2,7 @@
   "path": "",
   "access_token": "YOUR_ACCESS_TOKEN",
   "my_user_id": "YOUR_USER_ID",
+  "client_secret": "client_secret",
 
   "prefix_name" : "daybot",
   "follows_per_hour": 60,

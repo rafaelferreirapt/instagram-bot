@@ -22,7 +22,7 @@ class DayBot:
         self.log_file = open(self.filename, "wb")
 
         # Initializing the Instagram API with our access token
-        self.api = InstagramAPI(access_token=self.config["access_token"])
+        self.api = InstagramAPI(access_token=self.config["access_token"], client_secret=self.config['client_secret'])
 
         # Likes per tag rate
         self.likes_per_tag = math.trunc(min(self.config["follows_per_hour"],

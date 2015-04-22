@@ -11,7 +11,7 @@ class CleanFollows:
         self.config = json.load(config_file)
 
         # Initializing the Instagram API with our access token
-        self.api = InstagramAPI(access_token=self.config["access_token"])
+        self.api = InstagramAPI(access_token=self.config["access_token"], client_secret=self.config['client_secret'])
 
     def run(self):
         while True:

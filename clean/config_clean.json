@@ -1,4 +1,5 @@
 {
   "access_token": "YOUR_ACCESS_TOKEN",
-  "my_user_id": "YOUR_USER_ID"
+  "my_user_id": "YOUR_USER_ID",
+  "client_secret": "client_secret"
 }
