@@ -1,3 +1,6 @@
+**The ability to POST and DELETE likes, follows and comments is restricted to applications that offer business services and not consumer facing apps.**
+[https://help.instagram.com/contact/185819881608116](https://help.instagram.com/contact/185819881608116)
+
 Instagram Python Bot
 ===================
 
