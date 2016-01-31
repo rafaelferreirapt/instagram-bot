@@ -40,9 +40,10 @@ You have, for now, 3 different bots:
 ## Installation ##
 *Use a Raspberry PI!*
 
- 1. Clone this repository to a folder
- 2. Configure the bot's
- 3. Launch the **screen**:
+ 1. Clone this repository
+ 2. Install the requirements `$ (sudo) pip install -r requirements.txt`
+ 3. Configure the bot's
+ 4. Launch the **screen**:
  
 	```
 	// Bash:
